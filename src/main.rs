@@ -29,9 +29,9 @@ use xbar_core::initialize_logging;
 use xbar_core::system_monitor::SystemMonitor;
 
 use gpui::{
-    App, Bounds, Context, Entity, IntoElement, MouseButton, ParentElement, Pixels, Render, Rgba,
-    SharedString, Styled, Task, Window, WindowBackgroundAppearance, WindowBounds, WindowDecorations,
-    WindowKind, WindowOptions, div, prelude::*, px, rgb, rgba, size,
+    App, Bounds, Context, IntoElement, MouseButton, ParentElement, Pixels, Render, Rgba,
+    SharedString, Styled, Task, Window, WindowBackgroundAppearance, WindowBounds, WindowKind,
+    WindowOptions, div, point, prelude::*, px, rgba, size,
 };
 use gpui_platform::application;
 
@@ -179,9 +179,9 @@ impl GpuiBar {
     fn tick(&mut self) {
         if self.last_clock_update.elapsed() >= Duration::from_millis(900) {
             let fmt = if self.show_seconds {
-                "%Y-%m-%d %H:%M:%S"
+                "%m-%d %H:%M:%S"
             } else {
-                "%Y-%m-%d %H:%M"
+                "%m-%d %H:%M"
             };
             self.formated_now = Local::now().format(fmt).to_string();
             self.last_clock_update = Instant::now();
@@ -331,8 +331,8 @@ impl GpuiBar {
 
         div()
             .id(SharedString::from(format!("tag-{}", index)))
-            .w(px(38.))
-            .h(px(32.))
+            .w(px(30.))
+            .h(px(26.))
             .flex()
             .items_center()
             .justify_center()
@@ -341,7 +341,7 @@ impl GpuiBar {
             .border_color(border_c)
             .border_2()
             .text_color(text_color)
-            .text_size(px(18.))
+            .text_size(px(11.))
             .child(icon)
             .hover(|s| s.opacity(0.85))
             .on_mouse_down(
@@ -364,18 +364,18 @@ impl GpuiBar {
     ) -> impl IntoElement {
         div()
             .id(id)
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(border_c)
             .text_color(fg)
-            .text_size(px(14.))
+            .text_size(px(11.))
             .child(content.into())
     }
 
@@ -406,18 +406,18 @@ impl GpuiBar {
 
         div()
             .id("brightness")
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(border)
             .text_color(fg)
-            .text_size(px(14.))
+            .text_size(px(11.))
             .child(label)
             .on_mouse_down(
                 MouseButton::Left,
@@ -464,18 +464,18 @@ impl GpuiBar {
 
         div()
             .id("volume")
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(border)
             .text_color(fg)
-            .text_size(px(14.))
+            .text_size(px(11.))
             .child(label)
             .on_mouse_down(
                 MouseButton::Left,
@@ -503,18 +503,18 @@ impl GpuiBar {
         let hover_bg = rgba_alpha(0xFF8800, 0.95);
         div()
             .id("screenshot")
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(bg)
             .text_color(rgba_alpha(0xFFFFFF, 1.0))
-            .text_size(px(15.))
+            .text_size(px(12.))
             .child(ICON_SHOT)
             .hover(move |s| s.bg(hover_bg).border_color(hover_bg))
             .on_mouse_down(
@@ -532,18 +532,18 @@ impl GpuiBar {
         let label = format!("{}  {}", ICON_TIME, self.formated_now);
         div()
             .id("time")
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(bg)
             .text_color(rgba_alpha(0xFFFFFF, 1.0))
-            .text_size(px(14.))
+            .text_size(px(11.))
             .child(label)
             .on_mouse_down(
                 MouseButton::Left,
@@ -561,18 +561,18 @@ impl GpuiBar {
         let border = rgba_alpha(pill_color, 1.0);
         div()
             .id("layout-toggle")
-            .h(px(26.))
-            .px(px(10.))
-            .py(px(3.))
+            .h(px(22.))
+            .px(px(7.))
+            .py(px(2.))
             .flex()
             .items_center()
             .justify_center()
-            .rounded(px(12.))
+            .rounded(px(10.))
             .bg(bg)
             .border_1()
             .border_color(border)
             .text_color(rgba_alpha(0xFFFFFF, 1.0))
-            .text_size(px(14.))
+            .text_size(px(11.))
             .child(self.layout_symbol.clone())
             .on_mouse_down(
                 MouseButton::Left,
@@ -587,7 +587,7 @@ impl GpuiBar {
         let opts: [(&str, u32); 3] = [("[]=", 0), ("><>", 1), ("[M]", 2)];
         let current = self.layout_symbol.clone();
 
-        let mut row = div().flex().flex_row().gap(px(6.));
+        let mut row = div().flex().flex_row().gap(px(3.));
         for (sym, idx) in opts {
             let is_current = sym == current.as_str();
             let base = if is_current { 0x3CB371 } else { 0x4169E1 };
@@ -601,12 +601,12 @@ impl GpuiBar {
                 .flex()
                 .items_center()
                 .justify_center()
-                .rounded(px(12.))
+                .rounded(px(10.))
                 .bg(bg)
                 .border_1()
                 .border_color(border)
                 .text_color(rgba_alpha(0xFFFFFF, 1.0))
-                .text_size(px(14.))
+                .text_size(px(11.))
                 .child(sym)
                 .on_mouse_down(
                     MouseButton::Left,
@@ -651,7 +651,7 @@ impl Render for GpuiBar {
         let mem = snapshot.map(|s| s.memory_usage_percent).unwrap_or(0.0);
 
         // Workspace row
-        let mut tags = div().flex().flex_row().gap(px(4.));
+        let mut tags = div().flex().flex_row().gap(px(2.));
         for i in 0..9 {
             tags = tags.child(self.render_tag(i, cx));
         }
@@ -669,7 +669,7 @@ impl Render for GpuiBar {
             .flex()
             .flex_row()
             .items_center()
-            .gap(px(6.))
+            .gap(px(4.))
             .child(self.render_usage_pill("cpu", ICON_CPU, cpu))
             .child(self.render_usage_pill("mem", ICON_MEM, mem))
             .child(self.render_battery_pill())
@@ -685,7 +685,7 @@ impl Render for GpuiBar {
             .flex()
             .flex_row()
             .items_center()
-            .gap(px(6.))
+            .gap(px(4.))
             .child(tags)
             .child(layout_btn);
         if let Some(opts) = layout_options_el {
@@ -695,11 +695,12 @@ impl Render for GpuiBar {
         div()
             .w_full()
             .h_full()
-            .p(px(4.))
+            .p(px(2.))
             .flex()
             .flex_row()
             .items_center()
             .justify_between()
+            .overflow_hidden()
             .font_family(NERD_FONT)
             .text_color(rgba_alpha(0xFFFFFF, 1.0))
             .bg(rgba(0x00000000))
@@ -716,20 +717,29 @@ fn main() {
     let _ = initialize_logging("gpui_bar", &shared_path);
 
     application().run(|cx: &mut App| {
-        let width: Pixels = px(800.);
-        let height: Pixels = px(40.);
-        let bounds = Bounds::centered(None, size(width, height), cx);
+        // Match JWM's configured status_bar_height; width spans the primary
+        // display so the bar covers the screen until JWM repositions it.
+        let height: Pixels = px(42.);
+        let width: Pixels = cx
+            .primary_display()
+            .map(|d| d.bounds().size.width)
+            .unwrap_or(px(1920.));
+        let bounds = Bounds {
+            origin: point(px(0.), px(0.)),
+            size: size(width, height),
+        };
 
         let opts = WindowOptions {
             window_bounds: Some(WindowBounds::Windowed(bounds)),
             titlebar: None,
             window_background: WindowBackgroundAppearance::Transparent,
-            window_decorations: Some(WindowDecorations::Client),
-            kind: WindowKind::PopUp,
+            kind: WindowKind::Normal,
             is_resizable: false,
             is_minimizable: false,
             window_min_size: Some(size(width, height)),
-            app_id: Some("dev.gpui.bar".into()),
+            // WM_CLASS = "gpui_bar" — JWM detects this as its status bar
+            // (see config_x11.toml: [status_bar] name = "gpui_bar").
+            app_id: Some("gpui_bar".into()),
             ..Default::default()
         };
 
