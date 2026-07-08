@@ -4,7 +4,7 @@
 //   * 9 nerd-font workspace tag buttons with selected/filled/urgent/occupied visuals
 //   * Layout toggle + 3-option selector
 //   * Pills: CPU, memory, battery, brightness, volume, screenshot, time, monitor, scale
-//   * Click semantics: tag → view-tag command; volume/brightness left/right click;
+//   * Click semantics: tag → view-tag command; volume left-click mute + wheel adjust; brightness left/right click;
 //     screenshot pill spawns `flameshot gui`; clock toggles seconds
 //   * Background thread watches SharedRingBuffer and posts updates via
 //     `cx.spawn`; a 1Hz timer drives the clock + system-monitor refresh
@@ -30,8 +30,9 @@ use xbar_core::system_monitor::SystemMonitor;
 
 use gpui::{
     App, Bounds, Context, IntoElement, MouseButton, ParentElement, Pixels, Render, Rgba,
-    SharedString, Styled, Task, Window, WindowBackgroundAppearance, WindowBounds, WindowKind,
-    WindowOptions, div, point, prelude::*, px, rgba, size,
+    ScrollDelta, ScrollWheelEvent, SharedString, Styled, Task, Window,
+    WindowBackgroundAppearance, WindowBounds, WindowKind, WindowOptions, div, point, prelude::*,
+    px, rgba, size,
 };
 use gpui_platform::application;
 
@@ -486,16 +487,24 @@ impl GpuiBar {
                     cx.notify();
                 }),
             )
-            .on_mouse_down(
-                MouseButton::Right,
-                cx.listener(|this, _ev, _w, cx| {
-                    if let Some(d) = this.audio_manager.get_master_device().cloned() {
-                        let new_v = (d.volume - 5).clamp(0, 100);
-                        let _ = this.audio_manager.set_volume(&d.name, new_v, d.is_muted);
-                    }
-                    cx.notify();
-                }),
-            )
+            .on_scroll_wheel(cx.listener(|this, event: &ScrollWheelEvent, _w, cx| {
+                let delta_y = match event.delta {
+                    ScrollDelta::Pixels(delta) => f32::from(delta.y),
+                    ScrollDelta::Lines(delta) => delta.y,
+                };
+
+                if delta_y == 0.0 {
+                    return;
+                }
+
+                if let Some(d) = this.audio_manager.get_master_device().cloned() {
+                    let step = if delta_y > 0.0 { 5 } else { -5 };
+                    let new_v = (d.volume + step).clamp(0, 100);
+                    let _ = this.audio_manager.set_volume(&d.name, new_v, d.is_muted);
+                }
+
+                cx.notify();
+            }))
     }
 
     fn render_screenshot_pill(&self, cx: &mut Context<Self>) -> impl IntoElement + use<> {
